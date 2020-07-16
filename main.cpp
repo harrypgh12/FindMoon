@@ -65,8 +65,6 @@ bool isBright(Mat image, vector<Vec3f> circles, int maxBrightness, int index)
 	radius = cvRound(circles[index][2]);
 	crow = circles[index][1];
 	ccol = circles[index][0];
-	cout << "Moon radius " << radius << endl;
-	cout << "Moon center in pixel coord. =  row " << crow << " col " << ccol << endl;
 
 	int brightness;
 	int sum = 0;
@@ -84,8 +82,7 @@ bool isBright(Mat image, vector<Vec3f> circles, int maxBrightness, int index)
 			{
 				sum++;
 			}
-		}
-		cout << endl;		
+		}	
 	}
 
 	// if the total number of pixels with less brightness is less than half of total pixels in the circle,
@@ -133,21 +130,30 @@ int main()
 	for (int i = 0; i < circles.size(); i++)
 	{
 		Point center(cvRound(circles[i][0]), cvRound(circles[i][1]));
+		int radius = cvRound(circles[i][2]);
+		int crow = circles[i][1];
+		int ccol = circles[i][0];
+
+		cout << endl;
+		cout << "radius " << radius << " center pixel coord. =  row " << crow << " col " << ccol << endl;
 
 		// if it is not a full circle in the image, ignore
 		if (isFullCircle(grayImage,circles, i) == false)
-		{
+		{		
+			cout << "This circle " << " is ignored because it is not a full circle." << endl;
 			continue;
 		}
-		// if the full circle is not bright enough to be a moon, ignore
+		// if the pixels in the full circle does not consistent brightness , ignore
 		if (isBright(grayImage, circles, maxBrightness, i) == false)
 		{
+			cout << "This circle " << " is ignored because it doesn't have the consistent brightness." << endl;
 			continue;
 		}
 
+		cout << "This circle " << " is a full moon unless there are other bright circles in the image." << endl;
 		// draw circle center in blue
 		circle(image, center, 3, Scalar(255, 0, 0), -1, 8, 0);
-		int radius = cvRound(circles[i][2]);
+	
 		// draw circle outline in red
 		circle(image, center, radius, Scalar(0, 0, 255), 2, 8, 0);
 	}
